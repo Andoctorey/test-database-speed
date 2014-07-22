@@ -28,6 +28,14 @@ public class TestModel implements Serializable {
         this.testString = testString;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getTestString() {
         return testString;
     }
