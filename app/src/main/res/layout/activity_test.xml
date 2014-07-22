@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -42,10 +43,18 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/bt_get"
+            android:id="@+id/bt_get_all"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/get"
+            android:text="@string/get_all"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/bt_clear_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/clear_all"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="1" />
     </LinearLayout>
