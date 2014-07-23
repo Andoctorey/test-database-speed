@@ -76,5 +76,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
         return testModelsDao;
     }
+
+    public long getDatabaseSize() {
+        return context.getDatabasePath(DATABASE_NAME).length();
+    }
 }
 
