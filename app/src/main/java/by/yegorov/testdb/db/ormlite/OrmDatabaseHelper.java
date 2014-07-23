@@ -1,5 +1,7 @@
 package by.yegorov.testdb.db.ormlite;
 
+import by.yegorov.testdb.db.model.TestModel;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -11,27 +13,30 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
-import by.yegorov.testdb.db.model.TestModel;
 
+public class OrmDatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
+    private static final String TAG = OrmDatabaseHelper.class.toString();
 
-    private static final String TAG = DatabaseHelper.class.toString();
     private static final String DATABASE_NAME = "orm_test.db";
+
     private static final int DATABASE_VERSION = 1;
-    private static DatabaseHelper instance;
+
+    private static OrmDatabaseHelper instance;
+
     private Context context;
+
     private Dao<TestModel, Long> testModelsDao;
 
 
-    private DatabaseHelper(Context context) {
+    private OrmDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
-    public static DatabaseHelper getInstance(Context context) {
+    public static OrmDatabaseHelper getInstance(Context context) {
         if (instance == null) {
-            instance = new DatabaseHelper(context);
+            instance = new OrmDatabaseHelper(context);
         }
         return instance;
     }

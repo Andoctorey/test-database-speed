@@ -1,5 +1,7 @@
 package by.yegorov.testdb.db.ormlite;
 
+import by.yegorov.testdb.db.model.TestModel;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -9,15 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import by.yegorov.testdb.db.model.TestModel;
-
 public class DatabaseCore {
 
     private static final String TAG = DatabaseCore.class.toString();
 
     private static DatabaseCore instance;
 
-    private DatabaseHelper databaseHelper;
+    private OrmDatabaseHelper databaseHelper;
 
     private Dao<TestModel, Long> testModelDao;
 
@@ -30,7 +30,7 @@ public class DatabaseCore {
     }
 
     public DatabaseCore(Context context) {
-        databaseHelper = DatabaseHelper.getInstance(context);
+        databaseHelper = OrmDatabaseHelper.getInstance(context);
         try {
             testModelDao = databaseHelper.getTestModelDao();
         } catch (Exception e) {
