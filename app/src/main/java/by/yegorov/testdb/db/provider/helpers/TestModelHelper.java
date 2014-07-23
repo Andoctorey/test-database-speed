@@ -3,8 +3,8 @@ package by.yegorov.testdb.db.provider.helpers;
 
 import by.yegorov.testdb.db.model.TestModel;
 import by.yegorov.testdb.db.provider.ColumnStorage;
-import by.yegorov.testdb.db.provider.DatabaseHelper;
 import by.yegorov.testdb.db.provider.DatabaseProvider;
+import by.yegorov.testdb.db.provider.NativeDatabaseHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,11 +28,16 @@ public class TestModelHelper implements TestModelConsts {
     public static final List<String> TEST_MODEL_LIST_COLUMNS =
             new ColumnStorage(new String[]{TABLE_TEST_ID, TABLE_TEST_LONG, TABLE_TEST_STRING});
 
-    public static void insertTestModels(Context ctx, TestModel entity) {
-        ContentValues cv = new ContentValues();
-        cv.put(TABLE_TEST_STRING, entity.getTestString());
-        cv.put(TABLE_TEST_LONG, entity.getTestLong());
-        ctx.getContentResolver().insert(TEST_MODEL_URI, cv);
+    public static int insertTestModels(Context ctx, List<TestModel> testModels) {
+        ContentValues[] contentValuesArray = new ContentValues[testModels.size()];
+        for (int i = 0; i < testModels.size(); i++) {
+            TestModel entity = testModels.get(i);
+            ContentValues cv = new ContentValues();
+            cv.put(TABLE_TEST_STRING, entity.getTestString());
+            cv.put(TABLE_TEST_LONG, entity.getTestLong());
+            contentValuesArray[i] = cv;
+        }
+        return ctx.getContentResolver().bulkInsert(TEST_MODEL_URI, contentValuesArray);
     }
 
     private static TestModel parseTestModelCursor(Cursor c) {
@@ -43,8 +48,8 @@ public class TestModelHelper implements TestModelConsts {
         return entity;
     }
 
-    public static List<TestModel> getTestModels(Context ctx) {
-        List<TestModel> testModels = new ArrayList<TestModel>();
+    public static ArrayList<TestModel> getTestModels(Context ctx) {
+        ArrayList<TestModel> testModels = new ArrayList<TestModel>();
         Cursor c = ctx.getContentResolver().query(TEST_MODEL_URI, null, null, null, null);
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
@@ -57,8 +62,7 @@ public class TestModelHelper implements TestModelConsts {
     }
 
     public static void clearTestModels(Context ctx) {
-        DatabaseHelper.getInstance(ctx).getWritableDatabase().delete(DatabaseHelper.DATABASE_NAME,
-                null, null);
+        NativeDatabaseHelper.getInstance(ctx).getWritableDatabase().delete(TABLE_TEST, null, null);
     }
 
 
