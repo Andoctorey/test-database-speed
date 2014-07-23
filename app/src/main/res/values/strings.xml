@@ -4,6 +4,7 @@
     <string name="app_name">TestDb</string>
     <string name="records_count">Records count</string>
     <string name="insert">Insert</string>
-    <string name="get">Get</string>
+    <string name="get_all">Get all</string>
+    <string name="clear_all">Clear all</string>
 
 </resources>
