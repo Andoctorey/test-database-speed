@@ -1,8 +1,6 @@
 package by.yegorov.testdb.db.provider;
 
 
-import by.yegorov.testdb.db.provider.helpers.TestModelConsts;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -10,9 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.HashMap;
 
+import by.yegorov.testdb.db.provider.helpers.TestModelConsts;
+
 public class NativeDatabaseHelper extends SQLiteOpenHelper implements TestModelConsts {
 
-    public final static String DATABASE_NAME = "native_test.db";
+    public final static String DATABASE_NAME = "native.db";
 
     private final static int DATABASE_VERSION = 1;
 
