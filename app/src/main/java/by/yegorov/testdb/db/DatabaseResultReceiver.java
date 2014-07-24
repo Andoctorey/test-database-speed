@@ -1,5 +1,5 @@
 
-package by.yegorov.testdb.db.ormlite;
+package by.yegorov.testdb.db;
 
 import android.os.Bundle;
 import android.os.Handler;

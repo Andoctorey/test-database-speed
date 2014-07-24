@@ -1,10 +1,5 @@
 package by.yegorov.testdb;
 
-import by.yegorov.testdb.db.CommonDbHelper;
-import by.yegorov.testdb.db.model.TestModel;
-import by.yegorov.testdb.db.ormlite.DatabaseResultReceiver;
-import by.yegorov.testdb.db.ormlite.OrmDatabaseHelper;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +11,11 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
+
+import by.yegorov.testdb.db.CommonDbHelper;
+import by.yegorov.testdb.db.DatabaseResultReceiver;
+import by.yegorov.testdb.db.DatabaseService;
+import by.yegorov.testdb.db.model.TestModel;
 
 
 public class TestActivity extends Activity implements View.OnClickListener {
@@ -37,8 +37,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
 
     private void initViews() {
         spDbType = (Spinner) findViewById(R.id.sp_db_type);
-        spDbType.setAdapter(new ArrayAdapter<CommonDbHelper.DbType>(this,
-                android.R.layout.simple_spinner_dropdown_item, CommonDbHelper.DbType.values()));
+        spDbType.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
+                CommonDbHelper.DbType.values()));
         etCount = (EditText) findViewById(R.id.et_count);
         findViewById(R.id.bt_get_all).setOnClickListener(this);
         findViewById(R.id.bt_clear_all).setOnClickListener(this);
@@ -51,40 +51,35 @@ public class TestActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         final long start = System.currentTimeMillis();
+        final CommonDbHelper.DbType dbType = (CommonDbHelper.DbType) spDbType.getSelectedItem();
         switch (v.getId()) {
             case R.id.bt_get_all:
-                CommonDbHelper.getTestModels(this,
-                        (CommonDbHelper.DbType) spDbType.getSelectedItem(),
-                        new DatabaseResultReceiver() {
+                DatabaseService.getTestModels(this, dbType, new DatabaseResultReceiver() {
                     @Override
                     public void resultReceived(Object result) {
                         long time = System.currentTimeMillis() - start;
-                        long dbSize =
-                                OrmDatabaseHelper.getInstance(TestActivity.this).getDatabaseSize();
+                        long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);
                         ArrayList<TestModel> testModels = (ArrayList<TestModel>) result;
                         recordsCount = testModels.size();
+                        logAdapter.addItem("---------" + dbType.toString() + "---------");
                         logAdapter.addItem("get " + recordsCount + " records in time - " + time +
-                                        " ms");
+                                " ms");
                         logAdapter.addItem("average speed of getting  - " +
                                 doubleToString(1000d / (time / (double) recordsCount), 2) +
                                 " in second");
                         logAdapter.addItem("database size  - " + dbSize + " bytes");
-                        logAdapter.addItem("------------------------------");
                     }
                 });
                 break;
             case R.id.bt_clear_all:
-                CommonDbHelper.clearTestModels(this,
-                        (CommonDbHelper.DbType) spDbType.getSelectedItem(),
-                        new DatabaseResultReceiver() {
+                DatabaseService.clearTestModels(this, dbType, new DatabaseResultReceiver() {
                     @Override
                     public void resultReceived(Object result) {
                         long time = System.currentTimeMillis() - start;
-                        long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this,
-                                (CommonDbHelper.DbType) spDbType.getSelectedItem());
+                        long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);
+                        logAdapter.addItem("---------" + dbType.toString() + "---------");
                         logAdapter.addItem("clear db in time - " + time + " ms");
                         logAdapter.addItem("database size  - " + dbSize + " bytes");
-                        logAdapter.addItem("------------------------------");
                     }
                 });
                 break;
@@ -97,8 +92,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
                         testModels.add(new TestModel((long) (random.nextDouble() * (1000)),
                                 UUID.randomUUID().toString()));
                     }
-                    CommonDbHelper.insertTestModels(this,
-                            (CommonDbHelper.DbType) spDbType.getSelectedItem(), testModels,
+                    DatabaseService.insertTestModels(this, dbType, testModels,
                             new DatabaseResultReceiver() {
                                 @Override
                                 public void resultReceived(Object result) {
@@ -106,7 +100,9 @@ public class TestActivity extends Activity implements View.OnClickListener {
                                         long time = System.currentTimeMillis() - start;
                                         long dbSize =
                                                 CommonDbHelper.getDatabaseSize(TestActivity.this,
-                                                        (CommonDbHelper.DbType) spDbType.getSelectedItem());
+                                                        dbType);
+                                        logAdapter.addItem(
+                                                "---------" + dbType.toString() + "---------");
                                         logAdapter.addItem(
                                                 "inserted " + recordsCount + " records in time - " +
                                                         time + " ms");
@@ -115,7 +111,6 @@ public class TestActivity extends Activity implements View.OnClickListener {
                                                         1000d / (time / (double) recordsCount), 2) +
                                                 " in second");
                                         logAdapter.addItem("database size  - " + dbSize + " bytes");
-                                        logAdapter.addItem("------------------------------");
                                     }
                                 }
                             });

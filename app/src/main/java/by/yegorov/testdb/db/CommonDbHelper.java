@@ -1,16 +1,14 @@
 package by.yegorov.testdb.db;
 
+import android.content.Context;
+
+import java.util.ArrayList;
+
 import by.yegorov.testdb.db.model.TestModel;
-import by.yegorov.testdb.db.ormlite.DatabaseResultReceiver;
-import by.yegorov.testdb.db.ormlite.DatabaseService;
+import by.yegorov.testdb.db.ormlite.DatabaseCore;
 import by.yegorov.testdb.db.ormlite.OrmDatabaseHelper;
 import by.yegorov.testdb.db.provider.NativeDatabaseHelper;
 import by.yegorov.testdb.db.provider.helpers.TestModelHelper;
-
-import android.content.Context;
-import android.os.Bundle;
-
-import java.util.ArrayList;
 
 public class CommonDbHelper {
     public static final String DATA = "data";
@@ -31,40 +29,36 @@ public class CommonDbHelper {
         }
     }
 
-    public static void getTestModels(Context context, DbType dbType,
-                                     DatabaseResultReceiver receiver) {
+    public static ArrayList<TestModel> getTestModels(Context context, DbType dbType) {
+        ArrayList<TestModel> testModels = null;
         if (dbType.equals(DbType.NATIVE)) {
-            Bundle bundleExtra = new Bundle();
-            bundleExtra.putSerializable(DATA, TestModelHelper.getTestModels(context));
-            receiver.send(200, bundleExtra);
+            testModels = TestModelHelper.getTestModels(context);
         } else if (dbType.equals(DbType.ORMLITE_SQL)) {
-            DatabaseService.getTestModels(context, receiver);
+            testModels = DatabaseCore.getInstance(context).getTestModels();
         }
+        return testModels;
     }
 
-    public static void insertTestModels(Context context, DbType dbType,
-                                        ArrayList<TestModel> testModels,
-                                        DatabaseResultReceiver receiver) {
+    public static boolean insertTestModels(Context context, DbType dbType,
+                                           ArrayList<TestModel> testModels) {
+        boolean result = false;
         if (dbType.equals(DbType.NATIVE)) {
-            int rows = TestModelHelper.insertTestModels(context, testModels);
-            Bundle bundleExtra = new Bundle();
-            bundleExtra.putSerializable(DATA, rows == testModels.size());
-            receiver.send(200, bundleExtra);
+            result = TestModelHelper.insertTestModels(context, testModels) == testModels.size();
         } else if (dbType.equals(DbType.ORMLITE_SQL)) {
-            DatabaseService.insertTestModels(context, testModels, receiver);
+            result = DatabaseCore.getInstance(context).insertTestModels(testModels);
         }
+        return result;
     }
 
-    public static void clearTestModels(Context context, DbType dbType,
-                                       DatabaseResultReceiver receiver) {
+    public static boolean clearTestModels(Context context, DbType dbType) {
+        boolean result = false;
         if (dbType.equals(DbType.NATIVE)) {
             TestModelHelper.clearTestModels(context);
-            Bundle bundleExtra = new Bundle();
-            bundleExtra.putSerializable(DATA, true);
-            receiver.send(200, bundleExtra);
+            result = true;
         } else if (dbType.equals(DbType.ORMLITE_SQL)) {
-            DatabaseService.clearTestModels(context, receiver);
+            result = DatabaseCore.getInstance(context).clearAllTestModels();
         }
+        return result;
     }
 
     public static long getDatabaseSize(Context context, DbType dbType) {

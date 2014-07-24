@@ -1,4 +1,4 @@
-package by.yegorov.testdb.db.ormlite;
+package by.yegorov.testdb.db;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -18,72 +18,73 @@ public class DatabaseService extends IntentService {
 
     public static final String DATA = "data";
 
-    private static final String EXTRA_ID = "id";
+
+    private static final String DB_TYPE = "db_type";
 
     private static final String TAG = DatabaseService.class.getName();
 
-    public static final String ACTION_GET_TEST_MODELS = "by.wimix.promo.ACTION_GET_TEST_MODELS";
+    public static final String ACTION_GET_TEST_MODELS = "by.yegorov.testdb.ACTION_GET_TEST_MODELS";
 
-    public static final String ACTION_INSERT_APPS = "by.wimix.promo.ACTION_INSERT_APPS";
+    public static final String ACTION_INSERT_APPS = "by.yegorov.testdb.ACTION_INSERT_APPS";
 
-    public static final String ACTION_CLEAR_TEST_MODELS = "by.wimix.promo.ACTION_CLEAR_TEST_MODELS";
-
-    private DatabaseCore database;
+    public static final String ACTION_CLEAR_TEST_MODELS = "by.yegorov.testdb.ACTION_CLEAR_TEST_MODELS";
 
     public DatabaseService() {
         super(TAG);
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        database = DatabaseCore.getInstance(getApplicationContext());
-    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         String action = intent.getAction();
         final ResultReceiver receiver = intent.getParcelableExtra(RECEIVER);
-        Serializable extra = intent.getSerializableExtra(EXTRA_ID);
-        Serializable data;
+        Serializable data = intent.getSerializableExtra(DATA);
+        CommonDbHelper.DbType dbType = (CommonDbHelper.DbType) intent.getSerializableExtra(DB_TYPE);
+        Serializable result;
         if (ACTION_GET_TEST_MODELS.equalsIgnoreCase(action)) {
-            data = database.getTestModels();
+            result = CommonDbHelper.getTestModels(this, dbType);
         } else if (ACTION_INSERT_APPS.equalsIgnoreCase(action)) {
-            data = database.insertTestModels((ArrayList<TestModel>) extra);
+            result = CommonDbHelper.insertTestModels(this, dbType, (ArrayList<TestModel>) data);
         } else if (ACTION_CLEAR_TEST_MODELS.equalsIgnoreCase(action)) {
-            data = database.clearAllTestModels();
+            result = CommonDbHelper.clearTestModels(this, dbType);
         } else {
             Log.d(TAG, "Error: unsupported action (" + action + ")");
             return;
         }
         if (receiver != null) {
             Bundle bundleExtra = new Bundle();
-            bundleExtra.putSerializable(DATA, data);
+            bundleExtra.putSerializable(DATA, result);
             receiver.send(200, bundleExtra);
         }
 
     }
 
-    public static void getTestModels(Context context,  DatabaseResultReceiver receiver) {
+    public static void getTestModels(Context context, CommonDbHelper.DbType dbType,
+                                     DatabaseResultReceiver receiver) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_GET_TEST_MODELS);
         intent.putExtra(RECEIVER, receiver);
+        intent.putExtra(DB_TYPE, dbType);
         context.startService(intent);
     }
 
-    public static void insertTestModels(Context context, ArrayList<TestModel> testModels,
+    public static void insertTestModels(Context context, CommonDbHelper.DbType dbType,
+                                        ArrayList<TestModel> testModels,
                                         DatabaseResultReceiver receiver) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_INSERT_APPS);
         intent.putExtra(RECEIVER, receiver);
-        intent.putExtra(EXTRA_ID, testModels);
+        intent.putExtra(DATA, testModels);
+        intent.putExtra(DB_TYPE, dbType);
         context.startService(intent);
     }
 
-    public static void clearTestModels(Context context,                                       DatabaseResultReceiver receiver) {
+    public static void clearTestModels(Context context, CommonDbHelper.DbType dbType,
+                                       DatabaseResultReceiver receiver) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_CLEAR_TEST_MODELS);
         intent.putExtra(RECEIVER, receiver);
+        intent.putExtra(DB_TYPE, dbType);
         context.startService(intent);
     }
 
