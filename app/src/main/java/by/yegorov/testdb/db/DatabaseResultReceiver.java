@@ -19,14 +19,15 @@ public abstract class DatabaseResultReceiver<T> extends ResultReceiver {
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
         Serializable data = resultData.getSerializable(DatabaseService.DATA);
+        long time = resultData.getLong(DatabaseService.TIME);
         try {
-            resultReceived((T) data);
+            resultReceived((T) data, time);
         } catch (Exception e) {
             Log.d(TAG, "Error: wrong data type");
             e.printStackTrace();
         }
     }
 
-    public abstract void resultReceived(T result);
+    public abstract void resultReceived(T result, long time);
 
 }

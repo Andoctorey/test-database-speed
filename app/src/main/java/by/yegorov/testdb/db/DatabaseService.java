@@ -18,6 +18,7 @@ public class DatabaseService extends IntentService {
 
     public static final String DATA = "data";
 
+    public static final String TIME = "time";
 
     private static final String DB_TYPE = "db_type";
 
@@ -41,6 +42,7 @@ public class DatabaseService extends IntentService {
         Serializable data = intent.getSerializableExtra(DATA);
         CommonDbHelper.DbType dbType = (CommonDbHelper.DbType) intent.getSerializableExtra(DB_TYPE);
         Serializable result;
+        long start = System.currentTimeMillis();
         if (ACTION_GET_TEST_MODELS.equalsIgnoreCase(action)) {
             result = CommonDbHelper.getTestModels(this, dbType);
         } else if (ACTION_INSERT_APPS.equalsIgnoreCase(action)) {
@@ -54,6 +56,7 @@ public class DatabaseService extends IntentService {
         if (receiver != null) {
             Bundle bundleExtra = new Bundle();
             bundleExtra.putSerializable(DATA, result);
+            bundleExtra.putLong(TIME, System.currentTimeMillis() - start);
             receiver.send(200, bundleExtra);
         }
 
