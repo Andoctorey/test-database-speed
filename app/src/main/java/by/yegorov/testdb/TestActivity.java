@@ -9,7 +9,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.UUID;
 
 import by.yegorov.testdb.db.CommonDbHelper;
@@ -87,9 +86,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
                 try {
                     recordsCount = Integer.valueOf(etCount.getText().toString());
                     ArrayList<TestModel> testModels = new ArrayList<>();
-                    Random random = new Random();
                     for (int i = 0; i < recordsCount; i++) {
-                        testModels.add(new TestModel((long) (random.nextDouble() * (1000)),
+                        testModels.add(new TestModel(System.currentTimeMillis(),
                                 UUID.randomUUID().toString()));
                     }
                     DatabaseService.insertTestModels(this, dbType, testModels,
