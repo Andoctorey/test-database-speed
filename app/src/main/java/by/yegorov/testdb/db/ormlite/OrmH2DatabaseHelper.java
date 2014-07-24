@@ -18,7 +18,7 @@ public class OrmH2DatabaseHelper {
 
     private static final String TAG = OrmH2DatabaseHelper.class.toString();
 
-    private static final String DATABASE_NAME = "orm_h2.db";
+    private static final String DATABASE_NAME = "orm_h2";
 
 
     private static final int DATABASE_VERSION = 1;
@@ -65,7 +65,7 @@ public class OrmH2DatabaseHelper {
     }
 
     public long getDatabaseSize() {
-        return context.getFileStreamPath(DATABASE_NAME).length();
+        return context.getFileStreamPath(DATABASE_NAME + ".mv.db").length();
     }
 }
 

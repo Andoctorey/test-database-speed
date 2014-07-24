@@ -3,12 +3,12 @@ package by.yegorov.testdb;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import by.yegorov.testdb.db.CommonDbHelper;
@@ -20,12 +20,12 @@ import by.yegorov.testdb.db.model.TestModel;
 public class TestActivity extends Activity implements View.OnClickListener {
 
     private EditText etCount;
-
     private int recordsCount;
-
     private LogAdapter logAdapter;
+    private CheckBox chNative;
+    private CheckBox chH2;
+    private CheckBox chOrmSql;
 
-    private Spinner spDbType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +35,12 @@ public class TestActivity extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
-        spDbType = (Spinner) findViewById(R.id.sp_db_type);
-        spDbType.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
-                CommonDbHelper.DbType.values()));
+        chNative = (CheckBox) findViewById(R.id.ch_native);
+        chNative.setText(CommonDbHelper.DbType.NATIVE.toString());
+        chOrmSql = (CheckBox) findViewById(R.id.ch_orm_sql);
+        chOrmSql.setText(CommonDbHelper.DbType.ORMLITE_SQL.toString());
+        chH2 = (CheckBox) findViewById(R.id.ch_orm_h2);
+        chH2.setText(CommonDbHelper.DbType.ORMLITE_H2.toString());
         etCount = (EditText) findViewById(R.id.et_count);
         findViewById(R.id.bt_get_all).setOnClickListener(this);
         findViewById(R.id.bt_clear_all).setOnClickListener(this);
@@ -49,38 +52,23 @@ public class TestActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        final long start = System.currentTimeMillis();
-        final CommonDbHelper.DbType dbType = (CommonDbHelper.DbType) spDbType.getSelectedItem();
+        List<CommonDbHelper.DbType> dbTypes = new ArrayList<>();
+        if (chNative.isChecked())
+            dbTypes.add(CommonDbHelper.DbType.NATIVE);
+        if (chOrmSql.isChecked())
+            dbTypes.add(CommonDbHelper.DbType.ORMLITE_SQL);
+        if (chH2.isChecked())
+            dbTypes.add(CommonDbHelper.DbType.ORMLITE_H2);
         switch (v.getId()) {
             case R.id.bt_get_all:
-                DatabaseService.getTestModels(this, dbType, new DatabaseResultReceiver() {
-                    @Override
-                    public void resultReceived(Object result) {
-                        long time = System.currentTimeMillis() - start;
-                        long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);
-                        ArrayList<TestModel> testModels = (ArrayList<TestModel>) result;
-                        recordsCount = testModels.size();
-                        logAdapter.addItem("---------" + dbType.toString() + "---------");
-                        logAdapter.addItem("get " + recordsCount + " records in time - " + time +
-                                " ms");
-                        logAdapter.addItem("average speed of getting  - " +
-                                doubleToString(1000d / (time / (double) recordsCount), 2) +
-                                " in second");
-                        logAdapter.addItem("database size  - " + dbSize + " bytes");
-                    }
-                });
+                for (CommonDbHelper.DbType dbType : dbTypes) {
+                    getAll(dbType);
+                }
                 break;
             case R.id.bt_clear_all:
-                DatabaseService.clearTestModels(this, dbType, new DatabaseResultReceiver() {
-                    @Override
-                    public void resultReceived(Object result) {
-                        long time = System.currentTimeMillis() - start;
-                        long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);
-                        logAdapter.addItem("---------" + dbType.toString() + "---------");
-                        logAdapter.addItem("clear db in time - " + time + " ms");
-                        logAdapter.addItem("database size  - " + dbSize + " bytes");
-                    }
-                });
+                for (CommonDbHelper.DbType dbType : dbTypes) {
+                    clearAll(dbType);
+                }
                 break;
             case R.id.bt_insert:
                 try {
@@ -90,28 +78,9 @@ public class TestActivity extends Activity implements View.OnClickListener {
                         testModels.add(new TestModel(System.currentTimeMillis(),
                                 UUID.randomUUID().toString()));
                     }
-                    DatabaseService.insertTestModels(this, dbType, testModels,
-                            new DatabaseResultReceiver() {
-                                @Override
-                                public void resultReceived(Object result) {
-                                    if (((Boolean) result) == true) {
-                                        long time = System.currentTimeMillis() - start;
-                                        long dbSize =
-                                                CommonDbHelper.getDatabaseSize(TestActivity.this,
-                                                        dbType);
-                                        logAdapter.addItem(
-                                                "---------" + dbType.toString() + "---------");
-                                        logAdapter.addItem(
-                                                "inserted " + recordsCount + " records in time - " +
-                                                        time + " ms");
-                                        logAdapter.addItem("average speed of inserting  - " +
-                                                doubleToString(
-                                                        1000d / (time / (double) recordsCount), 2) +
-                                                " in second");
-                                        logAdapter.addItem("database size  - " + dbSize + " bytes");
-                                    }
-                                }
-                            });
+                    for (CommonDbHelper.DbType dbType : dbTypes) {
+                        insert(dbType, testModels);
+                    }
                 } catch (NumberFormatException e) {
                     logAdapter.addItem(e.toString());
                     e.printStackTrace();
@@ -120,6 +89,60 @@ public class TestActivity extends Activity implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    private void insert(final CommonDbHelper.DbType dbType, ArrayList<TestModel> testModels) {
+        DatabaseService.insertTestModels(this, dbType, testModels,
+                new DatabaseResultReceiver() {
+                    @Override
+                    public void resultReceived(Object result, long time) {
+                        if (((Boolean) result) == true) {
+                            long dbSize =
+                                    CommonDbHelper.getDatabaseSize(TestActivity.this,
+                                            dbType);
+                            logAdapter.addItem(
+                                    "---------" + dbType.toString() + "---------");
+                            logAdapter.addItem(
+                                    "inserted " + recordsCount + " records in time - " +
+                                            time + " ms");
+                            logAdapter.addItem("average speed of inserting  - " +
+                                    doubleToString(
+                                            1000d / (time / (double) recordsCount), 2) +
+                                    " in second");
+                            logAdapter.addItem("database size  - " + dbSize + " bytes");
+                        }
+                    }
+                });
+    }
+
+    private void clearAll(final CommonDbHelper.DbType dbType) {
+        DatabaseService.clearTestModels(this, dbType, new DatabaseResultReceiver() {
+            @Override
+            public void resultReceived(Object result, long time) {
+                long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);
+                logAdapter.addItem("---------" + dbType.toString() + "---------");
+                logAdapter.addItem("clear db in time - " + time + " ms");
+                logAdapter.addItem("database size  - " + dbSize + " bytes");
+            }
+        });
+    }
+
+    private void getAll(final CommonDbHelper.DbType dbType) {
+        DatabaseService.getTestModels(this, dbType, new DatabaseResultReceiver() {
+            @Override
+            public void resultReceived(Object result, long time) {
+                long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);
+                ArrayList<TestModel> testModels = (ArrayList<TestModel>) result;
+                recordsCount = testModels.size();
+                logAdapter.addItem("---------" + dbType.toString() + "---------");
+                logAdapter.addItem("get " + recordsCount + " records in time - " + time +
+                        " ms");
+                logAdapter.addItem("average speed of getting  - " +
+                        doubleToString(1000d / (time / (double) recordsCount), 2) +
+                        " in second");
+                logAdapter.addItem("database size  - " + dbSize + " bytes");
+            }
+        });
     }
 
     private String doubleToString(double d, double pow) {
