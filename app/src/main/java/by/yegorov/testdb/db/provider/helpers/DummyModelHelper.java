@@ -20,7 +20,7 @@ import by.yegorov.testdb.db.provider.NativeDatabaseHelper;
 public class DummyModelHelper implements TestModelConsts {
 
     public static final String CONTENT_TYPE_ITEM =
-            "vnd.android.cursor.item/by.yegorov.testdb.db.provider.DatabaseProvider.dummy_model";
+            "vnd.android.cursor.item/by.yegorov.testdb.db.provider.DatabaseProvider.dummy_models";
 
     public static final String CONTENT_TYPE_DIR =
             "vnd.android.cursor.dir/by.yegorov.testdb.db.provider.DatabaseProvider.dummy_models";
@@ -40,7 +40,8 @@ public class DummyModelHelper implements TestModelConsts {
             cv.put(TABLE_TEST_STRING, entity.getTestString());
             cv.put(TABLE_TEST_LONG, entity.getTestLong());
             operations.add(ContentProviderOperation.newInsert(DUMMY_MODEL_URI)
-                    .withValues(cv).build());
+                    .withValues(cv).withYieldAllowed(true)
+                    .build());
         }
         return ctx.getContentResolver().applyBatch(DUMMY_MODEL_URI.getAuthority(), operations).length;
     }

@@ -38,7 +38,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
         chNative = (CheckBox) findViewById(R.id.ch_native);
         chNative.setText(CommonDbHelper.DbType.NATIVE.toString());
         chOrmSql = (CheckBox) findViewById(R.id.ch_orm_sql);
-        chOrmSql.setText(CommonDbHelper.DbType.ORMLITE_SQL.toString());
+        chOrmSql.setText(CommonDbHelper.DbType.ORMLITE_SQLITE.toString());
         chH2 = (CheckBox) findViewById(R.id.ch_orm_h2);
         chH2.setText(CommonDbHelper.DbType.ORMLITE_H2.toString());
         etCount = (EditText) findViewById(R.id.et_count);
@@ -56,7 +56,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
         if (chNative.isChecked())
             dbTypes.add(CommonDbHelper.DbType.NATIVE);
         if (chOrmSql.isChecked())
-            dbTypes.add(CommonDbHelper.DbType.ORMLITE_SQL);
+            dbTypes.add(CommonDbHelper.DbType.ORMLITE_SQLITE);
         if (chH2.isChecked())
             dbTypes.add(CommonDbHelper.DbType.ORMLITE_H2);
         switch (v.getId()) {

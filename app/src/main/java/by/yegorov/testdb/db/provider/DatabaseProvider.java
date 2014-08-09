@@ -1,8 +1,11 @@
 package by.yegorov.testdb.db.provider;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -11,6 +14,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 import by.yegorov.testdb.db.provider.helpers.DummyModelHelper;
 import by.yegorov.testdb.db.provider.helpers.TestModelConsts;
@@ -57,7 +62,7 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        Log.i(TAG, "insert: " + uri.toString());
+//        Log.i(TAG, "insert: " + uri.toString());
         ContentValues cv = null;
         String table;
         Uri contentUri = null;
@@ -72,23 +77,41 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
         }
         Uri notifyUri = null;
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            long id = db.replace(table, null, cv);
-            if (id > 0) {
-                notifyUri = ContentUris.withAppendedId(contentUri, id);
-            } else {
-                SQLException exc = new SQLException("Failed to insert row into " + table);
-                Log.e(TAG, "Failed to insert row into " + table, exc);
-                throw exc;
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
+        long id = db.insert(table, null, cv);
+        if (id > 0) {
+            notifyUri = ContentUris.withAppendedId(contentUri, id);
+        } else {
+            SQLException exc = new SQLException("Failed to insert row into " + table);
+            Log.e(TAG, "Failed to insert row into " + table, exc);
+            throw exc;
         }
         return notifyUri;
     }
 
+    /**
+     * Performs the work provided in a single transaction
+     */
+    @Override
+    public ContentProviderResult[] applyBatch(
+            ArrayList<ContentProviderOperation> operations) {
+        ContentProviderResult[] result = new ContentProviderResult[operations
+                .size()];
+        int i = 0;
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (ContentProviderOperation operation : operations) {
+                result[i++] = operation.apply(this, result, i);
+            }
+            db.setTransactionSuccessful();
+        } catch (OperationApplicationException e) {
+            Log.d(TAG, "batch failed: " + e.getLocalizedMessage());
+        } finally {
+            db.endTransaction();
+        }
+
+        return result;
+    }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
@@ -108,13 +131,7 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
         }
         Cursor c = null;
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        db.beginTransaction();
-        try {
-            c = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
+        c = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
     }
@@ -145,13 +162,7 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            count = db.update(table, cv, selection, selectionArgs);
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
+        count = db.update(table, cv, selection, selectionArgs);
         return count;
     }
 
@@ -180,13 +191,7 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            count = db.delete(table, where, selectionArgs);
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
+        count = db.delete(table, where, selectionArgs);
         return count;
     }
 
