@@ -31,7 +31,8 @@ public class OrmH2DatabaseHelper {
         this.context = context;
         ConnectionSource connectionSource = null;
         try {
-            connectionSource = new JdbcConnectionSource("jdbc:h2:" + context.getFilesDir() + "/" + DATABASE_NAME);
+            connectionSource = new JdbcConnectionSource("jdbc:h2:" + context.getFilesDir() + "/" + DATABASE_NAME +
+                    ";FILE_LOCK=FS" + ";PAGE_SIZE=1024" + ";CACHE_SIZE=8192");
             dummyModelsDao = DaoManager.createDao(connectionSource, DummyModel.class);
             TableUtils.createTableIfNotExists(connectionSource, DummyModel.class);
             Log.d(TAG, "Database initialised");
