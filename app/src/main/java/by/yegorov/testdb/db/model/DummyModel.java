@@ -7,7 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.io.Serializable;
 
 @DatabaseTable()
-public class TestModel implements Serializable {
+public class DummyModel implements Serializable {
 
     @DatabaseField(generatedId = true)
     private long id;
@@ -19,11 +19,11 @@ public class TestModel implements Serializable {
     private long testLong;
 
 
-    public TestModel() {
+    public DummyModel() {
         // required by ormlite
     }
 
-    public TestModel(long testLong, String testString) {
+    public DummyModel(long testLong, String testString) {
         this.testLong = testLong;
         this.testString = testString;
     }

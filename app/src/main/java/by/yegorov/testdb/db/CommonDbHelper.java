@@ -4,13 +4,13 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-import by.yegorov.testdb.db.model.TestModel;
+import by.yegorov.testdb.db.model.DummyModel;
 import by.yegorov.testdb.db.ormlite.OrmH2DatabaseCore;
 import by.yegorov.testdb.db.ormlite.OrmH2DatabaseHelper;
 import by.yegorov.testdb.db.ormlite.OrmSqliteDatabaseCore;
 import by.yegorov.testdb.db.ormlite.OrmSqliteDatabaseHelper;
 import by.yegorov.testdb.db.provider.NativeDatabaseHelper;
-import by.yegorov.testdb.db.provider.helpers.TestModelHelper;
+import by.yegorov.testdb.db.provider.helpers.DummyModelHelper;
 
 public class CommonDbHelper {
     public static final String DATA = "data";
@@ -31,27 +31,27 @@ public class CommonDbHelper {
         }
     }
 
-    public static ArrayList<TestModel> getTestModels(Context context, DbType dbType) {
-        ArrayList<TestModel> testModels = null;
+    public static ArrayList<DummyModel> getTestModels(Context context, DbType dbType) {
+        ArrayList<DummyModel> dummyModels = null;
         if (dbType.equals(DbType.NATIVE)) {
-            testModels = TestModelHelper.getTestModels(context);
+            dummyModels = DummyModelHelper.getTestModels(context);
         } else if (dbType.equals(DbType.ORMLITE_SQL)) {
-            testModels = OrmSqliteDatabaseCore.getInstance(context).getTestModels();
+            dummyModels = OrmSqliteDatabaseCore.getInstance(context).getTestModels();
         } else if (dbType.equals(DbType.ORMLITE_H2)) {
-            testModels = OrmH2DatabaseCore.getInstance(context).getTestModels();
+            dummyModels = OrmH2DatabaseCore.getInstance(context).getTestModels();
         }
-        return testModels;
+        return dummyModels;
     }
 
     public static boolean insertTestModels(Context context, DbType dbType,
-                                           ArrayList<TestModel> testModels) {
+                                           ArrayList<DummyModel> dummyModels) {
         boolean result = false;
         if (dbType.equals(DbType.NATIVE)) {
-            result = TestModelHelper.insertTestModels(context, testModels) == testModels.size();
+            result = DummyModelHelper.insertTestModels(context, dummyModels) == dummyModels.size();
         } else if (dbType.equals(DbType.ORMLITE_SQL)) {
-            result = OrmSqliteDatabaseCore.getInstance(context).insertTestModels(testModels);
+            result = OrmSqliteDatabaseCore.getInstance(context).insertTestModels(dummyModels);
         } else if (dbType.equals(DbType.ORMLITE_H2)) {
-            result = OrmH2DatabaseCore.getInstance(context).insertTestModels(testModels);
+            result = OrmH2DatabaseCore.getInstance(context).insertTestModels(dummyModels);
         }
         return result;
     }
@@ -59,7 +59,7 @@ public class CommonDbHelper {
     public static boolean clearTestModels(Context context, DbType dbType) {
         boolean result = false;
         if (dbType.equals(DbType.NATIVE)) {
-            TestModelHelper.clearTestModels(context);
+            DummyModelHelper.clearTestModels(context);
             result = true;
         } else if (dbType.equals(DbType.ORMLITE_SQL)) {
             result = OrmSqliteDatabaseCore.getInstance(context).clearAllTestModels();

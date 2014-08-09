@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import by.yegorov.testdb.db.model.TestModel;
+import by.yegorov.testdb.db.model.DummyModel;
 
 public class OrmH2DatabaseCore {
 
@@ -19,7 +19,7 @@ public class OrmH2DatabaseCore {
 
     private OrmH2DatabaseHelper databaseHelper;
 
-    private Dao<TestModel, Long> testModelDao;
+    private Dao<DummyModel, Long> testModelDao;
 
 
     public static OrmH2DatabaseCore getInstance(Context context) {
@@ -39,13 +39,13 @@ public class OrmH2DatabaseCore {
         }
     }
 
-    public boolean insertTestModels(final List<TestModel> testModels) {
+    public boolean insertTestModels(final List<DummyModel> dummyModels) {
         try {
             return testModelDao.callBatchTasks(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                    for (TestModel testModel : testModels) {
-                        testModelDao.createOrUpdate(testModel);
+                    for (DummyModel dummyModel : dummyModels) {
+                        testModelDao.createOrUpdate(dummyModel);
                     }
                     return true;
                 }
@@ -69,9 +69,9 @@ public class OrmH2DatabaseCore {
     }
 
 
-    public ArrayList<TestModel> getTestModels() {
+    public ArrayList<DummyModel> getTestModels() {
         try {
-            return (ArrayList<TestModel>) testModelDao.queryForAll();
+            return (ArrayList<DummyModel>) testModelDao.queryForAll();
         } catch (Exception e) {
             Log.d(TAG, "Error getting testModels");
             e.printStackTrace();
@@ -80,11 +80,11 @@ public class OrmH2DatabaseCore {
     }
 
 
-    public TestModel getTestModel(long id) {
+    public DummyModel getTestModel(long id) {
         try {
-            TestModel testModel = testModelDao.queryForId(id);
+            DummyModel dummyModel = testModelDao.queryForId(id);
             // testModel.setImages(getTestModelImages(testModel.getId()));
-            return testModel;
+            return dummyModel;
         } catch (Exception e) {
             Log.d(TAG, "Error getting single testModel");
             e.printStackTrace();

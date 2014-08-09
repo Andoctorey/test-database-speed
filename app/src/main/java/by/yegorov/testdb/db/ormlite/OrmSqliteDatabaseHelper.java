@@ -11,7 +11,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
-import by.yegorov.testdb.db.model.TestModel;
+import by.yegorov.testdb.db.model.DummyModel;
 
 
 public class OrmSqliteDatabaseHelper extends OrmLiteSqliteOpenHelper {
@@ -26,7 +26,7 @@ public class OrmSqliteDatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private Context context;
 
-    private Dao<TestModel, Long> testModelsDao;
+    private Dao<DummyModel, Long> testModelsDao;
 
 
     private OrmSqliteDatabaseHelper(Context context) {
@@ -45,7 +45,7 @@ public class OrmSqliteDatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         Log.d(TAG, "Initialising database");
         try {
-            TableUtils.createTable(connectionSource, TestModel.class);
+            TableUtils.createTable(connectionSource, DummyModel.class);
             Log.d(TAG, "Database initialised");
         } catch (Exception e) {
             Log.d(TAG, "Error while initialising database");
@@ -66,7 +66,7 @@ public class OrmSqliteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             if (database == null)
                 database = getWritableDatabase();
-            TableUtils.dropTable(connectionSource, TestModel.class, true);
+            TableUtils.dropTable(connectionSource, DummyModel.class, true);
             onCreate(database, connectionSource);
             Log.d(TAG, "Database upgraded successfully");
         } catch (Exception e) {
@@ -75,9 +75,9 @@ public class OrmSqliteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    public Dao<TestModel, Long> getTestModelDao() throws SQLException {
+    public Dao<DummyModel, Long> getTestModelDao() throws SQLException {
         if (testModelsDao == null) {
-            testModelsDao = getDao(TestModel.class);
+            testModelsDao = getDao(DummyModel.class);
         }
         return testModelsDao;
     }
