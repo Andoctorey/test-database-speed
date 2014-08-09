@@ -1,8 +1,5 @@
 package by.yegorov.testdb.db.provider;
 
-import by.yegorov.testdb.db.provider.helpers.TestModelConsts;
-import by.yegorov.testdb.db.provider.helpers.TestModelHelper;
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -14,6 +11,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+
+import by.yegorov.testdb.db.provider.helpers.DummyModelHelper;
+import by.yegorov.testdb.db.provider.helpers.TestModelConsts;
 
 public class DatabaseProvider extends ContentProvider implements TestModelConsts {
 
@@ -47,9 +47,9 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
         Log.i(TAG, "getType: " + uri.toString());
         switch (uriMatcher.match(uri)) {
             case TEST_MODEL:
-                return TestModelHelper.CONTENT_TYPE_DIR;
+                return DummyModelHelper.CONTENT_TYPE_DIR;
             case TEST_MODEL_ID:
-                return TestModelHelper.CONTENT_TYPE_ITEM;
+                return DummyModelHelper.CONTENT_TYPE_ITEM;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -65,7 +65,7 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
             case TEST_MODEL:
                 table = TABLE_TEST;
                 cv = values;
-                contentUri = TestModelHelper.TEST_MODEL_URI;
+                contentUri = DummyModelHelper.DUMMY_MODEL_URI;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);

@@ -14,7 +14,7 @@ import java.util.UUID;
 import by.yegorov.testdb.db.CommonDbHelper;
 import by.yegorov.testdb.db.DatabaseResultReceiver;
 import by.yegorov.testdb.db.DatabaseService;
-import by.yegorov.testdb.db.model.TestModel;
+import by.yegorov.testdb.db.model.DummyModel;
 
 
 public class TestActivity extends Activity implements View.OnClickListener {
@@ -73,13 +73,13 @@ public class TestActivity extends Activity implements View.OnClickListener {
             case R.id.bt_insert:
                 try {
                     recordsCount = Integer.valueOf(etCount.getText().toString());
-                    ArrayList<TestModel> testModels = new ArrayList<>();
+                    ArrayList<DummyModel> dummyModels = new ArrayList<>();
                     for (int i = 0; i < recordsCount; i++) {
-                        testModels.add(new TestModel(System.currentTimeMillis(),
+                        dummyModels.add(new DummyModel(System.currentTimeMillis(),
                                 UUID.randomUUID().toString()));
                     }
                     for (CommonDbHelper.DbType dbType : dbTypes) {
-                        insert(dbType, testModels);
+                        insert(dbType, dummyModels);
                     }
                 } catch (NumberFormatException e) {
                     logAdapter.addItem(e.toString());
@@ -91,8 +91,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private void insert(final CommonDbHelper.DbType dbType, ArrayList<TestModel> testModels) {
-        DatabaseService.insertTestModels(this, dbType, testModels,
+    private void insert(final CommonDbHelper.DbType dbType, ArrayList<DummyModel> dummyModels) {
+        DatabaseService.insertTestModels(this, dbType, dummyModels,
                 new DatabaseResultReceiver() {
                     @Override
                     public void resultReceived(Object result, long time) {
@@ -132,8 +132,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
             @Override
             public void resultReceived(Object result, long time) {
                 long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);
-                ArrayList<TestModel> testModels = (ArrayList<TestModel>) result;
-                recordsCount = testModels.size();
+                ArrayList<DummyModel> dummyModels = (ArrayList<DummyModel>) result;
+                recordsCount = dummyModels.size();
                 logAdapter.addItem("---------" + dbType.toString() + "---------");
                 logAdapter.addItem("get " + recordsCount + " records in time - " + time +
                         " ms");

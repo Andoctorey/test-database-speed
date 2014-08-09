@@ -10,7 +10,7 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import by.yegorov.testdb.db.model.TestModel;
+import by.yegorov.testdb.db.model.DummyModel;
 
 public class DatabaseService extends IntentService {
 
@@ -46,7 +46,7 @@ public class DatabaseService extends IntentService {
         if (ACTION_GET_TEST_MODELS.equalsIgnoreCase(action)) {
             result = CommonDbHelper.getTestModels(this, dbType);
         } else if (ACTION_INSERT_APPS.equalsIgnoreCase(action)) {
-            result = CommonDbHelper.insertTestModels(this, dbType, (ArrayList<TestModel>) data);
+            result = CommonDbHelper.insertTestModels(this, dbType, (ArrayList<DummyModel>) data);
         } else if (ACTION_CLEAR_TEST_MODELS.equalsIgnoreCase(action)) {
             result = CommonDbHelper.clearTestModels(this, dbType);
         } else {
@@ -72,12 +72,12 @@ public class DatabaseService extends IntentService {
     }
 
     public static void insertTestModels(Context context, CommonDbHelper.DbType dbType,
-                                        ArrayList<TestModel> testModels,
+                                        ArrayList<DummyModel> dummyModels,
                                         DatabaseResultReceiver receiver) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_INSERT_APPS);
         intent.putExtra(RECEIVER, receiver);
-        intent.putExtra(DATA, testModels);
+        intent.putExtra(DATA, dummyModels);
         intent.putExtra(DB_TYPE, dbType);
         context.startService(intent);
     }

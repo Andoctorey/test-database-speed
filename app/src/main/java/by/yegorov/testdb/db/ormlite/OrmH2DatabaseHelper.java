@@ -11,7 +11,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
-import by.yegorov.testdb.db.model.TestModel;
+import by.yegorov.testdb.db.model.DummyModel;
 
 
 public class OrmH2DatabaseHelper {
@@ -27,7 +27,7 @@ public class OrmH2DatabaseHelper {
 
     private Context context;
 
-    private Dao<TestModel, Long> testModelsDao;
+    private Dao<DummyModel, Long> dummyModelsDao;
 
 
     private OrmH2DatabaseHelper(Context context) throws SQLException {
@@ -35,8 +35,8 @@ public class OrmH2DatabaseHelper {
         ConnectionSource connectionSource = null;
         try {
             connectionSource = new JdbcConnectionSource("jdbc:h2:" + context.getFilesDir() + "/" + DATABASE_NAME);
-            testModelsDao = DaoManager.createDao(connectionSource, TestModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, TestModel.class);
+            dummyModelsDao = DaoManager.createDao(connectionSource, DummyModel.class);
+            TableUtils.createTableIfNotExists(connectionSource, DummyModel.class);
             Log.d(TAG, "Database initialised");
         } finally {
             // destroy the data source which should close underlying connections
@@ -60,8 +60,8 @@ public class OrmH2DatabaseHelper {
     }
 
 
-    public Dao<TestModel, Long> getTestModelDao() throws SQLException {
-        return testModelsDao;
+    public Dao<DummyModel, Long> getTestModelDao() throws SQLException {
+        return dummyModelsDao;
     }
 
     public long getDatabaseSize() {
