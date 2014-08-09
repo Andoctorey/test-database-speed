@@ -1,7 +1,7 @@
 
 package by.yegorov.testdb.db.provider.helpers;
 
-public interface TestModelConsts {
+public interface DummyModelConstants {
 
     public static final String TABLE_TEST = "test_table";
 
