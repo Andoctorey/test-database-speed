@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import by.yegorov.testdb.db.model.DummyModel;
 
-public class DatabaseService extends IntentService {
+public class DatabaseIntentService extends IntentService {
 
     public static final String RECEIVER = "receiver";
 
@@ -22,15 +22,15 @@ public class DatabaseService extends IntentService {
 
     private static final String DB_TYPE = "db_type";
 
-    private static final String TAG = DatabaseService.class.getName();
+    private static final String TAG = DatabaseIntentService.class.getName();
 
-    public static final String ACTION_GET_TEST_MODELS = "by.yegorov.testdb.ACTION_GET_TEST_MODELS";
+    public static final String ACTION_GET_DUMMY_MODELS = "by.yegorov.testdb.ACTION_GET_DUMMY_MODELS";
 
-    public static final String ACTION_INSERT_APPS = "by.yegorov.testdb.ACTION_INSERT_APPS";
+    public static final String ACTION_INSERT_DUMMY_MODELS = "by.yegorov.testdb.ACTION_INSERT_DUMMY_MODELS";
 
-    public static final String ACTION_CLEAR_TEST_MODELS = "by.yegorov.testdb.ACTION_CLEAR_TEST_MODELS";
+    public static final String ACTION_CLEAR_DUMMY_MODELS = "by.yegorov.testdb.ACTION_CLEAR_DUMMY_MODELS";
 
-    public DatabaseService() {
+    public DatabaseIntentService() {
         super(TAG);
     }
 
@@ -43,12 +43,12 @@ public class DatabaseService extends IntentService {
         CommonDbHelper.DbType dbType = (CommonDbHelper.DbType) intent.getSerializableExtra(DB_TYPE);
         Serializable result;
         long start = System.currentTimeMillis();
-        if (ACTION_GET_TEST_MODELS.equalsIgnoreCase(action)) {
-            result = CommonDbHelper.getTestModels(this, dbType);
-        } else if (ACTION_INSERT_APPS.equalsIgnoreCase(action)) {
-            result = CommonDbHelper.insertTestModels(this, dbType, (ArrayList<DummyModel>) data);
-        } else if (ACTION_CLEAR_TEST_MODELS.equalsIgnoreCase(action)) {
-            result = CommonDbHelper.clearTestModels(this, dbType);
+        if (ACTION_GET_DUMMY_MODELS.equalsIgnoreCase(action)) {
+            result = CommonDbHelper.getDummyModels(this, dbType);
+        } else if (ACTION_INSERT_DUMMY_MODELS.equalsIgnoreCase(action)) {
+            result = CommonDbHelper.insertDummyModels(this, dbType, (ArrayList<DummyModel>) data);
+        } else if (ACTION_CLEAR_DUMMY_MODELS.equalsIgnoreCase(action)) {
+            result = CommonDbHelper.clearDummyModels(this, dbType);
         } else {
             Log.d(TAG, "Error: unsupported action (" + action + ")");
             return;
@@ -62,30 +62,30 @@ public class DatabaseService extends IntentService {
 
     }
 
-    public static void getTestModels(Context context, CommonDbHelper.DbType dbType,
+    public static void getDummyModels(Context context, CommonDbHelper.DbType dbType,
                                      DatabaseResultReceiver receiver) {
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_GET_TEST_MODELS);
+        Intent intent = new Intent(context, DatabaseIntentService.class);
+        intent.setAction(ACTION_GET_DUMMY_MODELS);
         intent.putExtra(RECEIVER, receiver);
         intent.putExtra(DB_TYPE, dbType);
         context.startService(intent);
     }
 
-    public static void insertTestModels(Context context, CommonDbHelper.DbType dbType,
+    public static void insertDummyModels(Context context, CommonDbHelper.DbType dbType,
                                         ArrayList<DummyModel> dummyModels,
                                         DatabaseResultReceiver receiver) {
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_INSERT_APPS);
+        Intent intent = new Intent(context, DatabaseIntentService.class);
+        intent.setAction(ACTION_INSERT_DUMMY_MODELS);
         intent.putExtra(RECEIVER, receiver);
         intent.putExtra(DATA, dummyModels);
         intent.putExtra(DB_TYPE, dbType);
         context.startService(intent);
     }
 
-    public static void clearTestModels(Context context, CommonDbHelper.DbType dbType,
+    public static void clearDummyModels(Context context, CommonDbHelper.DbType dbType,
                                        DatabaseResultReceiver receiver) {
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_CLEAR_TEST_MODELS);
+        Intent intent = new Intent(context, DatabaseIntentService.class);
+        intent.setAction(ACTION_CLEAR_DUMMY_MODELS);
         intent.putExtra(RECEIVER, receiver);
         intent.putExtra(DB_TYPE, dbType);
         context.startService(intent);

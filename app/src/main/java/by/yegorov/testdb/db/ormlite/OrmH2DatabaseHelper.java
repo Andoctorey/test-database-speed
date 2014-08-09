@@ -20,9 +20,6 @@ public class OrmH2DatabaseHelper {
 
     private static final String DATABASE_NAME = "orm_h2";
 
-
-    private static final int DATABASE_VERSION = 1;
-
     private static OrmH2DatabaseHelper instance;
 
     private Context context;
@@ -39,7 +36,6 @@ public class OrmH2DatabaseHelper {
             TableUtils.createTableIfNotExists(connectionSource, DummyModel.class);
             Log.d(TAG, "Database initialised");
         } finally {
-            // destroy the data source which should close underlying connections
             if (connectionSource != null) {
                 connectionSource.close();
             }
@@ -60,7 +56,7 @@ public class OrmH2DatabaseHelper {
     }
 
 
-    public Dao<DummyModel, Long> getTestModelDao() throws SQLException {
+    public Dao<DummyModel, Long> getDummyModelDao() throws SQLException {
         return dummyModelsDao;
     }
 

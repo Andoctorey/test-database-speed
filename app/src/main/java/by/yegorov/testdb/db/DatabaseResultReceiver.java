@@ -18,8 +18,8 @@ public abstract class DatabaseResultReceiver<T> extends ResultReceiver {
 
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
-        Serializable data = resultData.getSerializable(DatabaseService.DATA);
-        long time = resultData.getLong(DatabaseService.TIME);
+        Serializable data = resultData.getSerializable(DatabaseIntentService.DATA);
+        long time = resultData.getLong(DatabaseIntentService.TIME);
         try {
             resultReceived((T) data, time);
         } catch (Exception e) {

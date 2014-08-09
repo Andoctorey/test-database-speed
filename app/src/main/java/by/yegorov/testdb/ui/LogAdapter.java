@@ -1,4 +1,4 @@
-package by.yegorov.testdb;
+package by.yegorov.testdb.ui;
 
 
 import android.content.Context;
@@ -10,11 +10,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import by.yegorov.testdb.R;
+
 public class LogAdapter extends BaseAdapter {
 
-    private static final String TAG = LogAdapter.class.getName();
     private final LayoutInflater layoutInflater;
-    private ArrayList<String> logs = new ArrayList<>();
+    private final ArrayList<String> logs = new ArrayList<>();
 
     public LogAdapter(Context context) {
         layoutInflater = LayoutInflater.from(context);

@@ -13,8 +13,8 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            runProguard true
+            proguardFiles 'proguard-rules.pro'
         }
     }
 
@@ -23,6 +23,18 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/jersey-module-version'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
