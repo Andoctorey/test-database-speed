@@ -1,4 +1,4 @@
-package by.yegorov.testdb;
+package by.yegorov.testdb.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,16 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import by.yegorov.testdb.R;
 import by.yegorov.testdb.db.CommonDbHelper;
+import by.yegorov.testdb.db.DatabaseIntentService;
 import by.yegorov.testdb.db.DatabaseResultReceiver;
-import by.yegorov.testdb.db.DatabaseService;
 import by.yegorov.testdb.db.model.DummyModel;
 
 
 public class TestActivity extends Activity implements View.OnClickListener {
 
-    private EditText etCount;
     private int recordsCount;
+    private EditText etCount;
     private LogAdapter logAdapter;
     private CheckBox chNative;
     private CheckBox chH2;
@@ -31,10 +32,10 @@ public class TestActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        initViews();
+        initContentView();
     }
 
-    private void initViews() {
+    private void initContentView() {
         chNative = (CheckBox) findViewById(R.id.ch_native);
         chNative.setText(CommonDbHelper.DbType.NATIVE.toString());
         chOrmSql = (CheckBox) findViewById(R.id.ch_orm_sql);
@@ -92,11 +93,11 @@ public class TestActivity extends Activity implements View.OnClickListener {
     }
 
     private void insert(final CommonDbHelper.DbType dbType, ArrayList<DummyModel> dummyModels) {
-        DatabaseService.insertTestModels(this, dbType, dummyModels,
+        DatabaseIntentService.insertDummyModels(this, dbType, dummyModels,
                 new DatabaseResultReceiver() {
                     @Override
                     public void resultReceived(Object result, long time) {
-                        if (((Boolean) result) == true) {
+                        if (((Boolean) result)) {
                             long dbSize =
                                     CommonDbHelper.getDatabaseSize(TestActivity.this,
                                             dbType);
@@ -116,7 +117,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
     }
 
     private void clearAll(final CommonDbHelper.DbType dbType) {
-        DatabaseService.clearTestModels(this, dbType, new DatabaseResultReceiver() {
+        DatabaseIntentService.clearDummyModels(this, dbType, new DatabaseResultReceiver() {
             @Override
             public void resultReceived(Object result, long time) {
                 long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);
@@ -128,7 +129,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
     }
 
     private void getAll(final CommonDbHelper.DbType dbType) {
-        DatabaseService.getTestModels(this, dbType, new DatabaseResultReceiver() {
+        DatabaseIntentService.getDummyModels(this, dbType, new DatabaseResultReceiver() {
             @Override
             public void resultReceived(Object result, long time) {
                 long dbSize = CommonDbHelper.getDatabaseSize(TestActivity.this, dbType);

@@ -17,9 +17,7 @@ public class OrmH2DatabaseCore {
 
     private static OrmH2DatabaseCore instance;
 
-    private OrmH2DatabaseHelper databaseHelper;
-
-    private Dao<DummyModel, Long> testModelDao;
+    private Dao<DummyModel, Long> dummyModelDao;
 
 
     public static OrmH2DatabaseCore getInstance(Context context) {
@@ -30,37 +28,43 @@ public class OrmH2DatabaseCore {
     }
 
     public OrmH2DatabaseCore(Context context) {
-        databaseHelper = OrmH2DatabaseHelper.getInstance(context);
+        OrmH2DatabaseHelper databaseHelper = OrmH2DatabaseHelper.getInstance(context);
         try {
-            testModelDao = databaseHelper.getTestModelDao();
+            dummyModelDao = databaseHelper.getDummyModelDao();
         } catch (Exception e) {
             Log.d(TAG, "Error getting daos");
             e.printStackTrace();
         }
     }
 
-    public boolean insertTestModels(final List<DummyModel> dummyModels) {
+    public boolean insertDummyModels(final List<DummyModel> dummyModels) {
         try {
-            return testModelDao.callBatchTasks(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    for (DummyModel dummyModel : dummyModels) {
-                        testModelDao.createOrUpdate(dummyModel);
+            boolean result;
+            if (dummyModels.size() == 1)
+                result = dummyModelDao.createOrUpdate(dummyModels.get(0)).isCreated();
+            else {
+                result = dummyModelDao.callBatchTasks(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        for (DummyModel dummyModel : dummyModels) {
+                            dummyModelDao.createOrUpdate(dummyModel);
+                        }
+                        return true;
                     }
-                    return true;
-                }
-            });
+                });
+            }
+            return result;
         } catch (Exception e) {
-            Log.d(TAG, "Error inserting testModels");
+            Log.d(TAG, "Error inserting dummyModels");
             e.printStackTrace();
             return false;
         }
     }
 
 
-    public boolean clearAllTestModels() {
+    public boolean clearAllDummyModels() {
         try {
-            testModelDao.deleteBuilder().delete();
+            dummyModelDao.deleteBuilder().delete();
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Error clearing database");
@@ -69,24 +73,22 @@ public class OrmH2DatabaseCore {
     }
 
 
-    public ArrayList<DummyModel> getTestModels() {
+    public ArrayList<DummyModel> getDummyModels() {
         try {
-            return (ArrayList<DummyModel>) testModelDao.queryForAll();
+            return (ArrayList<DummyModel>) dummyModelDao.queryForAll();
         } catch (Exception e) {
-            Log.d(TAG, "Error getting testModels");
+            Log.d(TAG, "Error getting dummyModels");
             e.printStackTrace();
         }
         return null;
     }
 
 
-    public DummyModel getTestModel(long id) {
+    public DummyModel getDummyModel(long id) {
         try {
-            DummyModel dummyModel = testModelDao.queryForId(id);
-            // testModel.setImages(getTestModelImages(testModel.getId()));
-            return dummyModel;
+            return dummyModelDao.queryForId(id);
         } catch (Exception e) {
-            Log.d(TAG, "Error getting single testModel");
+            Log.d(TAG, "Error getting single dummyModel");
             e.printStackTrace();
         }
         return null;

@@ -17,14 +17,14 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import by.yegorov.testdb.db.provider.helpers.DummyModelConstants;
 import by.yegorov.testdb.db.provider.helpers.DummyModelHelper;
-import by.yegorov.testdb.db.provider.helpers.TestModelConsts;
 
-public class DatabaseProvider extends ContentProvider implements TestModelConsts {
+public class DatabaseProvider extends ContentProvider implements DummyModelConstants {
 
     private static final String TAG = DatabaseProvider.class.getName();
 
-    private NativeDatabaseHelper mDbHelper;
+    private SqliteDatabaseHelper mDbHelper;
 
     private static final int TEST_MODEL = 1;
 
@@ -32,7 +32,7 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
 
     public static final String PROVIDER_NAME = "by.yegorov.testdb.db.DatabaseProvider";
 
-    private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         uriMatcher.addURI(PROVIDER_NAME, TABLE_TEST, TEST_MODEL);
@@ -42,14 +42,13 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
 
     @Override
     public boolean onCreate() {
-        mDbHelper = NativeDatabaseHelper.getInstance(getContext());
+        mDbHelper = SqliteDatabaseHelper.getInstance(getContext());
         return mDbHelper != null;
     }
 
 
     @Override
     public String getType(Uri uri) {
-        Log.i(TAG, "getType: " + uri.toString());
         switch (uriMatcher.match(uri)) {
             case TEST_MODEL:
                 return DummyModelHelper.CONTENT_TYPE_DIR;
@@ -62,10 +61,10 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-//        Log.i(TAG, "insert: " + uri.toString());
-        ContentValues cv = null;
+        ContentValues cv;
         String table;
-        Uri contentUri = null;
+        Uri contentUri;
+        Uri notifyUri;
         switch (uriMatcher.match(uri)) {
             case TEST_MODEL:
                 table = TABLE_TEST;
@@ -75,7 +74,6 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        Uri notifyUri = null;
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         long id = db.insert(table, null, cv);
         if (id > 0) {
@@ -88,14 +86,10 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
         return notifyUri;
     }
 
-    /**
-     * Performs the work provided in a single transaction
-     */
     @Override
     public ContentProviderResult[] applyBatch(
             ArrayList<ContentProviderOperation> operations) {
-        ContentProviderResult[] result = new ContentProviderResult[operations
-                .size()];
+        ContentProviderResult[] result = new ContentProviderResult[operations.size()];
         int i = 0;
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.beginTransaction();
@@ -109,7 +103,6 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
         } finally {
             db.endTransaction();
         }
-
         return result;
     }
 
@@ -129,20 +122,18 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        Cursor c = null;
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        c = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor c = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        Log.i(TAG, "update: " + uri.toString());
-        ContentValues cv = null;
+        ContentValues cv;
         String table;
         long id;
-        int count = 0;
+        int count;
         switch (uriMatcher.match(uri)) {
             case TEST_MODEL:
                 table = TABLE_TEST;
@@ -169,9 +160,9 @@ public class DatabaseProvider extends ContentProvider implements TestModelConsts
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         Log.i(TAG, "delete: " + uri.toString());
-        int count = 0;
-        String table = "";
-        String where = "";
+        int count;
+        String table;
+        String where;
         long id;
         switch (uriMatcher.match(uri)) {
             case TEST_MODEL:

@@ -26,7 +26,7 @@ public class OrmSqliteDatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private Context context;
 
-    private Dao<DummyModel, Long> testModelsDao;
+    private Dao<DummyModel, Long> dummyModelsDao;
 
 
     private OrmSqliteDatabaseHelper(Context context) {
@@ -75,11 +75,11 @@ public class OrmSqliteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    public Dao<DummyModel, Long> getTestModelDao() throws SQLException {
-        if (testModelsDao == null) {
-            testModelsDao = getDao(DummyModel.class);
+    public Dao<DummyModel, Long> getDummyModelDao() throws SQLException {
+        if (dummyModelsDao == null) {
+            dummyModelsDao = getDao(DummyModel.class);
         }
-        return testModelsDao;
+        return dummyModelsDao;
     }
 
     public long getDatabaseSize() {

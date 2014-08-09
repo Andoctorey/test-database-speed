@@ -13,19 +13,19 @@ public class DummyModel implements Serializable {
     private long id;
 
     @DatabaseField
-    private String testString;
+    private String dummyString;
 
     @DatabaseField
-    private long testLong;
+    private long dummyLong;
 
 
     public DummyModel() {
         // required by ormlite
     }
 
-    public DummyModel(long testLong, String testString) {
-        this.testLong = testLong;
-        this.testString = testString;
+    public DummyModel(long dummyLong, String dummyString) {
+        this.dummyLong = dummyLong;
+        this.dummyString = dummyString;
     }
 
     public long getId() {
@@ -36,19 +36,19 @@ public class DummyModel implements Serializable {
         this.id = id;
     }
 
-    public String getTestString() {
-        return testString;
+    public String getDummyString() {
+        return dummyString;
     }
 
-    public void setTestString(String testString) {
-        this.testString = testString;
+    public void setDummyString(String dummyString) {
+        this.dummyString = dummyString;
     }
 
-    public long getTestLong() {
-        return testLong;
+    public long getDummyLong() {
+        return dummyLong;
     }
 
-    public void setTestLong(long testLong) {
-        this.testLong = testLong;
+    public void setDummyLong(long dummyLong) {
+        this.dummyLong = dummyLong;
     }
 }

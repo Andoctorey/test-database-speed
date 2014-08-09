@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".TestActivity"
+            android:name=".ui.TestActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".db.DatabaseService" />
+        <service android:name=".db.DatabaseIntentService" />
         <provider
             android:name=".db.provider.DatabaseProvider"
             android:authorities="by.yegorov.testdb.db.DatabaseProvider"

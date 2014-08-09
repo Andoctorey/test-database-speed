@@ -8,17 +8,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.HashMap;
 
-import by.yegorov.testdb.db.provider.helpers.TestModelConsts;
+import by.yegorov.testdb.db.provider.helpers.DummyModelConstants;
 
-public class NativeDatabaseHelper extends SQLiteOpenHelper implements TestModelConsts {
+public class SqliteDatabaseHelper extends SQLiteOpenHelper implements DummyModelConstants {
 
     public final static String DATABASE_NAME = "native.db";
 
     private final static int DATABASE_VERSION = 1;
 
-    private static NativeDatabaseHelper instance;
+    private static SqliteDatabaseHelper instance;
 
-    private static HashMap<String, String> TABLES_CREATE = new HashMap<String, String>();
+    private static final HashMap<String, String> TABLES_CREATE = new HashMap<>();
 
     static {
         TABLES_CREATE.put(TABLE_TEST, "CREATE TABLE " + TABLE_TEST + " (" + TABLE_TEST_ID +
@@ -28,27 +28,23 @@ public class NativeDatabaseHelper extends SQLiteOpenHelper implements TestModelC
 
     private final Context context;
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE " + TABLE_TEST + ";");
-        db.execSQL(TABLES_CREATE.get(TABLE_TEST));
-    }
 
-    public static NativeDatabaseHelper getInstance(Context context) {
+    public static SqliteDatabaseHelper getInstance(Context context) {
         if (instance == null) {
-            instance = new NativeDatabaseHelper(context);
+            instance = new SqliteDatabaseHelper(context);
         }
         return instance;
     }
 
-    private NativeDatabaseHelper(Context ctx) {
+    private SqliteDatabaseHelper(Context ctx) {
         this(ctx, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    private NativeDatabaseHelper(Context context, String name, CursorFactory factory, int version) {
+    private SqliteDatabaseHelper(Context context, String name, CursorFactory factory, int version) {
         super(context, name, factory, version);
         this.context = context;
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -56,6 +52,13 @@ public class NativeDatabaseHelper extends SQLiteOpenHelper implements TestModelC
             db.execSQL(sql);
         }
     }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE " + TABLE_TEST + ";");
+        db.execSQL(TABLES_CREATE.get(TABLE_TEST));
+    }
+
 
     public long getDatabaseSize() {
         return context.getDatabasePath(DATABASE_NAME).length();
