@@ -26,6 +26,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
     private CheckBox chNative;
     private CheckBox chH2;
     private CheckBox chOrmSql;
+    private CheckBox chGreenDao;
 
 
     @Override
@@ -42,6 +43,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
         chOrmSql.setText(CommonDbHelper.DbType.ORMLITE_SQLITE.toString());
         chH2 = (CheckBox) findViewById(R.id.ch_orm_h2);
         chH2.setText(CommonDbHelper.DbType.ORMLITE_H2.toString());
+        chGreenDao = (CheckBox) findViewById(R.id.ch_green_dao);
+        chGreenDao.setText(CommonDbHelper.DbType.GREENDAO.toString());
         etCount = (EditText) findViewById(R.id.et_count);
         findViewById(R.id.bt_get_all).setOnClickListener(this);
         findViewById(R.id.bt_clear_all).setOnClickListener(this);
@@ -60,6 +63,8 @@ public class TestActivity extends Activity implements View.OnClickListener {
             dbTypes.add(CommonDbHelper.DbType.ORMLITE_SQLITE);
         if (chH2.isChecked())
             dbTypes.add(CommonDbHelper.DbType.ORMLITE_H2);
+        if (chGreenDao.isChecked())
+            dbTypes.add(CommonDbHelper.DbType.GREENDAO);
         switch (v.getId()) {
             case R.id.bt_get_all:
                 for (CommonDbHelper.DbType dbType : dbTypes) {
@@ -76,8 +81,7 @@ public class TestActivity extends Activity implements View.OnClickListener {
                     recordsCount = Integer.valueOf(etCount.getText().toString());
                     ArrayList<DummyModel> dummyModels = new ArrayList<>();
                     for (int i = 0; i < recordsCount; i++) {
-                        dummyModels.add(new DummyModel(System.currentTimeMillis(),
-                                UUID.randomUUID().toString()));
+                        dummyModels.add(new DummyModel(System.currentTimeMillis(), UUID.randomUUID().toString()));
                     }
                     for (CommonDbHelper.DbType dbType : dbTypes) {
                         insert(dbType, dummyModels);

@@ -1,5 +1,5 @@
 
-package by.yegorov.testdb.db.provider;
+package by.yegorov.testdb.db.nativeProvider;
 
 import java.util.ArrayList;
 

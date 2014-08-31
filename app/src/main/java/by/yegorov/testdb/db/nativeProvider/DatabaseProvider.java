@@ -1,4 +1,4 @@
-package by.yegorov.testdb.db.provider;
+package by.yegorov.testdb.db.nativeProvider;
 
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
@@ -17,8 +17,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import by.yegorov.testdb.db.provider.helpers.DummyModelConstants;
-import by.yegorov.testdb.db.provider.helpers.DummyModelHelper;
+import by.yegorov.testdb.db.nativeProvider.helpers.DummyModelConstants;
+import by.yegorov.testdb.db.nativeProvider.helpers.DummyModelHelper;
 
 public class DatabaseProvider extends ContentProvider implements DummyModelConstants {
 

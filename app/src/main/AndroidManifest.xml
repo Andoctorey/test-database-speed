@@ -18,7 +18,7 @@
         </activity>
         <service android:name=".db.DatabaseIntentService" />
         <provider
-            android:name=".db.provider.DatabaseProvider"
+            android:name=".db.nativeProvider.DatabaseProvider"
             android:authorities="by.yegorov.testdb.db.DatabaseProvider"
             android:exported="false" />
     </application>

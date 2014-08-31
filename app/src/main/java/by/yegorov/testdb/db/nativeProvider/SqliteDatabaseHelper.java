@@ -1,4 +1,4 @@
-package by.yegorov.testdb.db.provider;
+package by.yegorov.testdb.db.nativeProvider;
 
 
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.HashMap;
 
-import by.yegorov.testdb.db.provider.helpers.DummyModelConstants;
+import by.yegorov.testdb.db.nativeProvider.helpers.DummyModelConstants;
 
 public class SqliteDatabaseHelper extends SQLiteOpenHelper implements DummyModelConstants {
 
