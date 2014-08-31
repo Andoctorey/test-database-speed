@@ -1,5 +1,5 @@
 
-package by.yegorov.testdb.db.provider.helpers;
+package by.yegorov.testdb.db.nativeProvider.helpers;
 
 public interface DummyModelConstants {
 

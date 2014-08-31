@@ -4,17 +4,18 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
+import by.yegorov.testdb.db.greendao.GreenDaoDatabaseCore;
 import by.yegorov.testdb.db.model.DummyModel;
+import by.yegorov.testdb.db.nativeProvider.SqliteDatabaseHelper;
+import by.yegorov.testdb.db.nativeProvider.helpers.DummyModelHelper;
 import by.yegorov.testdb.db.ormlite.OrmH2DatabaseCore;
 import by.yegorov.testdb.db.ormlite.OrmH2DatabaseHelper;
 import by.yegorov.testdb.db.ormlite.OrmSqliteDatabaseCore;
 import by.yegorov.testdb.db.ormlite.OrmSqliteDatabaseHelper;
-import by.yegorov.testdb.db.provider.SqliteDatabaseHelper;
-import by.yegorov.testdb.db.provider.helpers.DummyModelHelper;
 
 public class CommonDbHelper {
     public enum DbType {
-        NATIVE("native"), ORMLITE_SQLITE("ormlite+sql"), ORMLITE_H2("ormlite+h2");
+        NATIVE("native"), ORMLITE_SQLITE("ormlite+sql"), ORMLITE_H2("ormlite+h2"), GREENDAO("greendao");
 
         private final String name;
 
@@ -36,6 +37,8 @@ public class CommonDbHelper {
             dummyModels = OrmSqliteDatabaseCore.getInstance(context).getDummyModels();
         } else if (dbType.equals(DbType.ORMLITE_H2)) {
             dummyModels = OrmH2DatabaseCore.getInstance(context).getDummyModels();
+        } else if (dbType.equals(DbType.GREENDAO)) {
+            dummyModels = GreenDaoDatabaseCore.getInstance(context).getDummyModels();
         }
         return dummyModels;
     }
@@ -52,6 +55,8 @@ public class CommonDbHelper {
             result = OrmSqliteDatabaseCore.getInstance(context).insertDummyModels(dummyModels);
         } else if (dbType.equals(DbType.ORMLITE_H2)) {
             result = OrmH2DatabaseCore.getInstance(context).insertDummyModels(dummyModels);
+        } else if (dbType.equals(DbType.GREENDAO)) {
+            result = GreenDaoDatabaseCore.getInstance(context).insertDummyModels(dummyModels);
         }
         return result;
     }
@@ -65,6 +70,8 @@ public class CommonDbHelper {
             result = OrmSqliteDatabaseCore.getInstance(context).clearAllDummyModels();
         } else if (dbType.equals(DbType.ORMLITE_H2)) {
             result = OrmH2DatabaseCore.getInstance(context).clearAllDummyModels();
+        } else if (dbType.equals(DbType.GREENDAO)) {
+            result = GreenDaoDatabaseCore.getInstance(context).clearAllDummyModels();
         }
         return result;
     }
@@ -76,6 +83,8 @@ public class CommonDbHelper {
             return OrmSqliteDatabaseHelper.getInstance(context).getDatabaseSize();
         } else if (dbType.equals(DbType.ORMLITE_H2)) {
             return OrmH2DatabaseHelper.getInstance(context).getDatabaseSize();
+        } else if (dbType.equals(DbType.GREENDAO)) {
+            return GreenDaoDatabaseCore.getInstance(context).getDatabaseSize();
         }
         return 0;
     }

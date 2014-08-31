@@ -1,4 +1,4 @@
-package by.yegorov.testdb.db.provider.helpers;
+package by.yegorov.testdb.db.nativeProvider.helpers;
 
 
 import android.content.ContentProviderOperation;
@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.yegorov.testdb.db.model.DummyModel;
-import by.yegorov.testdb.db.provider.ColumnStorage;
-import by.yegorov.testdb.db.provider.DatabaseProvider;
-import by.yegorov.testdb.db.provider.SqliteDatabaseHelper;
+import by.yegorov.testdb.db.nativeProvider.ColumnStorage;
+import by.yegorov.testdb.db.nativeProvider.DatabaseProvider;
+import by.yegorov.testdb.db.nativeProvider.SqliteDatabaseHelper;
 
 public class DummyModelHelper implements DummyModelConstants {
 
@@ -45,7 +45,7 @@ public class DummyModelHelper implements DummyModelConstants {
 
     private static DummyModel parseDummyModelCursor(Cursor c) {
         DummyModel entity = new DummyModel();
-        entity.setId(c.getInt(TEST_MODEL_LIST_COLUMNS.indexOf(TABLE_TEST_ID)));
+        entity.setId(c.getLong(TEST_MODEL_LIST_COLUMNS.indexOf(TABLE_TEST_ID)));
         entity.setDummyString(c.getString(TEST_MODEL_LIST_COLUMNS.indexOf(TABLE_TEST_STRING)));
         entity.setDummyLong(c.getLong(TEST_MODEL_LIST_COLUMNS.indexOf(TABLE_TEST_LONG)));
         return entity;

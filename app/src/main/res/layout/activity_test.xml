@@ -19,6 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="end"
             android:checked="true" />
 
         <CheckBox
@@ -26,6 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="end"
             android:checked="true" />
 
         <CheckBox
@@ -33,6 +35,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="end"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/ch_green_dao"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
             android:checked="true" />
 
     </LinearLayout>

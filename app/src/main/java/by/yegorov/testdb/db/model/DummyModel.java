@@ -10,13 +10,14 @@ import java.io.Serializable;
 public class DummyModel implements Serializable {
 
     @DatabaseField(generatedId = true)
-    private long id;
+    //not long for greendao generator
+    private Long id;
 
     @DatabaseField
     private String dummyString;
 
     @DatabaseField
-    private long dummyLong;
+    private Long dummyLong;
 
 
     public DummyModel() {
@@ -28,11 +29,17 @@ public class DummyModel implements Serializable {
         this.dummyString = dummyString;
     }
 
-    public long getId() {
+    public DummyModel(Long id, long dummyLong, String dummyString) {
+        this.id = id;
+        this.dummyLong = dummyLong;
+        this.dummyString = dummyString;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
